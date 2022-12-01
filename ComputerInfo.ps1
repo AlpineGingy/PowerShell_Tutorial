@@ -12,10 +12,9 @@ do {
     5.	Current CPU/RAM/Disk usage
     6.	Last 20 Event Log errors
     7.	Users and groups
-    8.	Shares
-    9.	Printers
-    10.	Network info
-    11.	Number of processes running
+    8.	Printers
+    9.	Network info
+    10.	Number of processes running
     "
 
     $choice = Read-Host "Please enter a choice from above, or enter 'q' to quit"
@@ -32,7 +31,6 @@ do {
         8 {"Method";Break}
         9 {"Method";Break}
         10 {"Method";Break}
-        11 {"Method";Break}
         'q' {"Goodbye"; Break}
         Default {
             Write-Host "Invalid response" -f Red
@@ -90,5 +88,5 @@ function Get-Resources{
       } } }     
 
       # Write results 
-      Write-host "Resources on" $computername "- RAM Usage:"$RoundMemory"%, CPU:"$cpu"%, Free" $free "GB"
+      Write-host "Resources on" $computername "- RAM Usage:"$RoundMemory"%, CPU:"$cpu"%, Free" $free "GB" -f Blue
       }
