@@ -55,8 +55,8 @@ function Get-InstalledSoftware {
 
 function Get-AVStatus {
     Get-CimInstance -Namespace root/SecurityCenter2 -ClassName AntivirusProduct
-    ""
-    Get-MpComputerStatus
+    # ""
+    # Get-MpComputerStatus
 }
 
 function Get-FirewallStatus {
@@ -108,11 +108,11 @@ function Get-Users {
 }
 
 function Get-Printers {
-    Get-Printer
+    Get-Printer | Select Name,Type,DriverName,PortName | ft
 }
 
 function Get-NetworkInfo {
-    Get-NetAdapter
+    Get-NetAdapter | ft
 }
 
 function Get-Processes {
