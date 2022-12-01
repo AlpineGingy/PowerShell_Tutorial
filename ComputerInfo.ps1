@@ -20,6 +20,27 @@ do {
 
     $choice = Read-Host "Please enter a choice from above, or enter 'q' to quit"
 
+    switch($choice)
+    {
+        1 {"Method";Break}
+        2 {"Method";Break}
+        3 {"Method";Break}
+        4 {"Method";Break}
+        5 {"Method";Break}
+        6 {"Method";Break}
+        7 {"Method";Break}
+        8 {"Method";Break}
+        9 {"Method";Break}
+        10 {"Method";Break}
+        11 {"Method";Break}
+        'q' {"Goodbye"; Break}
+        Default {
+            Write-Host "Invalid response" -f Red
+        }
+    }
+
+    Start-Sleep -Seconds 1.5
+
 } while (
     $choice -ne 'q'
 )
