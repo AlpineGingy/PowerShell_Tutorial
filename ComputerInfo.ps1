@@ -22,11 +22,11 @@ do {
 
     switch($choice)
     {
-        1 {"Method";Break}
-        2 {"Method";Break}
-        3 {"Method";Break}
-        4 {"Method";Break}
-        5 {"Method";Break}
+        1 { Get-PCHardware; Break}
+        2 { Get-InstalledSoftware; Break}
+        3 { Get-AVStatus; Break}
+        4 { Get-FirewallStatus; Break}
+        5 { Get-Resources; Break}
         6 {"Method";Break}
         7 {"Method";Break}
         8 {"Method";Break}
@@ -45,4 +45,50 @@ do {
     $choice -ne 'q'
 )
 
+function Get-PCHardware () {
+    systeminfo
+}
 
+function Get-InstalledSoftware () {
+    Get-WmiObject -class Win32_Product
+}
+
+function Get-AVStatus () {
+    Get-CimInstance -Namespace root/SecurityCenter2 -ClassName AntivirusProduct
+    ""
+    Get-MpComputerStatus
+}
+
+function Get-FirewallStatus () {
+    Get-NetFirewallProfile
+}
+
+function Get-Resources{  
+    param(  
+    $computername =$env:computername 
+    )  
+    # Processor utilization 
+    $LoadPercent=Get-WmiObject Win32_Processor | Select LoadPercentage
+    $cpu = $LoadPercent.LoadPercentage
+    # Memory utilization 
+    $ComputerMemory = Get-WmiObject -ComputerName $computername  -Class win32_operatingsystem -ErrorAction Stop 
+    $Memory = ((($ComputerMemory.TotalVisibleMemorySize - $ComputerMemory.FreePhysicalMemory)*100)/ $ComputerMemory.TotalVisibleMemorySize) 
+    $RoundMemory = [math]::Round($Memory, 2) 
+    # Free disk space 
+    $disks = get-wmiobject -class "Win32_LogicalDisk" -namespace "root\CIMV2" -computername $computername
+    $results = foreach ($disk in $disks)  
+    { 
+    if ($disk.Size -gt 0) 
+    { 
+      $size = [math]::round($disk.Size/1GB, 0) 
+      $free = [math]::round($disk.FreeSpace/1GB, 0) 
+      [PSCustomObject]@{ 
+      Drive = $disk.Name 
+      Name = $disk.VolumeName 
+      "Total Disk Size" = $size
+      "Free Disk Size" = "{0:N0} ({1:P0})" -f $free, ($free/$size) 
+      } } }     
+
+      # Write results 
+      Write-host "Resources on" $computername "- RAM Usage:"$RoundMemory"%, CPU:"$cpu"%, Free" $free "GB"
+      }
