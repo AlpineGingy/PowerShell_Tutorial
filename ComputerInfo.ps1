@@ -10,11 +10,11 @@ do {
     3.	AV status
     4.	Firewall status
     5.	Current CPU/RAM/Disk usage
-    6.	Last 20 Event Log errors
+    6.	View Event Log
     7.	Users and groups
     8.	Printers
     9.	Network info
-    10.	Number of processes running
+    10.	Processes running
     "
 
     $choice = Read-Host "Please enter a choice from above, or enter 'q' to quit"
@@ -26,11 +26,11 @@ do {
         3 { Get-AVStatus; Break}
         4 { Get-FirewallStatus; Break}
         5 { Get-Resources; Break}
-        6 {"Method";Break}
-        7 {"Method";Break}
-        8 {"Method";Break}
-        9 {"Method";Break}
-        10 {"Method";Break}
+        6 {Get-EventLogs; Break}
+        7 { Get-Users; Break}
+        8 { Get-Printers; Break}
+        9 { Get-NetworkInfo; Break}
+        10 { Get-Processes; Break}
         'q' {"Goodbye"; Break}
         Default {
             Write-Host "Invalid response" -f Red
@@ -43,21 +43,23 @@ do {
     $choice -ne 'q'
 )
 
-function Get-PCHardware () {
+function Get-PCHardware {
     systeminfo
 }
 
-function Get-InstalledSoftware () {
-    Get-WmiObject -class Win32_Product
+function Get-InstalledSoftware {
+    #Get-WmiObject -Class Win32_Product | where vendor -eq CodeTwo | select Name, Version
+    $InstalledSoftware = Get-ChildItem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall"
+    foreach($obj in $InstalledSoftware){write-host $obj.GetValue('DisplayName') -NoNewline; write-host " - " -NoNewline; write-host $obj.GetValue('DisplayVersion')}
 }
 
-function Get-AVStatus () {
+function Get-AVStatus {
     Get-CimInstance -Namespace root/SecurityCenter2 -ClassName AntivirusProduct
     ""
     Get-MpComputerStatus
 }
 
-function Get-FirewallStatus () {
+function Get-FirewallStatus {
     Get-NetFirewallProfile
 }
 
@@ -90,3 +92,36 @@ function Get-Resources{
       # Write results 
       Write-host "Resources on" $computername "- RAM Usage:"$RoundMemory"%, CPU:"$cpu"%, Free" $free "GB" -f Blue
       }
+
+function Get-EventLogs {
+    # Get-Eventlog -Logname System -Newest 5 | fl
+
+    Get-EventLog -LogName System -Newest 10 -EntryType Error,Warning | Select Index,EntryType,Message,TimeGenerated | ft
+}
+
+function Get-Users {
+    ""
+    Write-host "Local Users: "-f Magenta
+    get-localuser | ft
+    Write-host "Local Groups: " -f Magenta
+    get-localgroup | ft
+}
+
+function Get-Printers {
+    Get-Printer
+}
+
+function Get-NetworkInfo {
+    Get-NetAdapter
+}
+
+function Get-Processes {
+    "
+    1. Number of processes running
+    2. List of processes running
+    "
+    $input = Read-Host "Please choose an option: "
+
+    if ($input -eq 1) {ps | Measure | Select Count}
+    else {ps}
+    }
