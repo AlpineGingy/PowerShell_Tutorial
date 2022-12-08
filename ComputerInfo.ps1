@@ -1,48 +1,5 @@
 Write-Host "Hello, this script is used to find data and information about the current computer." -f Green
 
-do {
-    $choice = 0
-
-    "
-    Welcome to ComputerInfo! Enter one of the choices below to get more info (Enter q to quit):
-    1.	PC hardware
-    2.	Software installed
-    3.	AV status
-    4.	Firewall status
-    5.	Current CPU/RAM/Disk usage
-    6.	View Event Log
-    7.	Users and groups
-    8.	Printers
-    9.	Network info
-    10.	Processes running
-    "
-
-    $choice = Read-Host "Please enter a choice from above, or enter 'q' to quit"
-
-    switch($choice)
-    {
-        1 { Get-PCHardware; Break}
-        2 { Get-InstalledSoftware; Break}
-        3 { Get-AVStatus; Break}
-        4 { Get-FirewallStatus; Break}
-        5 { Get-Resources; Break}
-        6 {Get-EventLogs; Break}
-        7 { Get-Users; Break}
-        8 { Get-Printers; Break}
-        9 { Get-NetworkInfo; Break}
-        10 { Get-Processes; Break}
-        'q' {"Goodbye"; Break}
-        Default {
-            Write-Host "Invalid response" -f Red
-        }
-    }
-
-    Start-Sleep -Seconds 1.5
-
-} while (
-    $choice -ne 'q'
-)
-
 function Get-PCHardware {
     systeminfo
 }
@@ -125,3 +82,48 @@ function Get-Processes {
     if ($input -eq 1) {ps | Measure | Select Count}
     else {ps}
     }
+
+do {
+    $choice = 0
+
+    "
+    Welcome to ComputerInfo! Enter one of the choices below to get more info (Enter q to quit):
+    1.	PC hardware
+    2.	Software installed
+    3.	AV status
+    4.	Firewall status
+    5.	Current CPU/RAM/Disk usage
+    6.	View Event Log
+    7.	Users and groups
+    8.	Printers
+    9.	Network info
+    10.	Processes running
+    "
+
+    $choice = Read-Host "Please enter a choice from above, or enter 'q' to quit"
+
+    switch($choice)
+    {
+        1 { Get-PCHardware; Break}
+        2 { Get-InstalledSoftware; Break}
+        3 { Get-AVStatus; Break}
+        4 { Get-FirewallStatus; Break}
+        5 { Get-Resources; Break}
+        6 {Get-EventLogs; Break}
+        7 { Get-Users; Break}
+        8 { Get-Printers; Break}
+        9 { Get-NetworkInfo; Break}
+        10 { Get-Processes; Break}
+        'q' {"Goodbye"; Break}
+        Default {
+            Write-Host "Invalid response" -f Red
+        }
+    }
+
+    Start-Sleep -Seconds 1.5
+
+} while (
+    $choice -ne 'q'
+)
+
+
